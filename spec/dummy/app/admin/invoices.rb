@@ -1,6 +1,6 @@
 ActiveAdmin.register Invoice do
   permit_params :legal_date, :number, :paid, :state, :attachment, :photo, :category_id,
-    :city_id, :amount, :color, :updated_at, :active, item_ids: []
+    :city_id, :amount, :color, :updated_at, :active, item_ids: [], other_item_ids: []
 
   filter :id, as: :numeric_range_filter
 
@@ -18,7 +18,7 @@ ActiveAdmin.register Invoice do
   index do
     selectable_column
     id_column
-    tag_column :state
+    tag_column :state, interactive: true
     bool_column :paid
     image_column :photo, style: :thumb
     attachment_column :attachment
@@ -80,6 +80,8 @@ ActiveAdmin.register Invoice do
                          display_name: :name,
                          minimum_input_length: 1
 
+      f.input :other_item_ids, as: :tags, collection: Item.all.limit(5)
+
       f.input :attachment
 
       f.input :photo
@@ -102,7 +104,8 @@ ActiveAdmin.register Invoice do
                         level_3: {
                           attribute: :city_id,
                           minimum_input_length: 1,
-                          fields: [:name, :information]
+                          fields: [:name, :information],
+                          predicate: :start
                         }
     end
 

@@ -11,6 +11,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :category
   belongs_to :city
   has_and_belongs_to_many :items
+  has_and_belongs_to_many :other_items, class_name: 'Item'
 
   enumerize :state, in: [:pending, :rejected, :approved], default: :pending
 
@@ -41,6 +42,19 @@ class Invoice < ActiveRecord::Base
 
     event :reject do
       transitions from: :pending, to: :rejected
+    end
+  end
+
+  aasm :shipping, column: :shipping_status do
+    state :stock, initial: true
+    state :transit, :received
+
+    event :ship do
+      transitions from: :stock, to: :transit
+    end
+
+    event :confirm do
+      transitions from: :transit, to: :received
     end
   end
 

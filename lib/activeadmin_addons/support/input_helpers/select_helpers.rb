@@ -4,11 +4,7 @@ module ActiveAdminAddons
     include InputOptionsHandler
 
     def array_to_select_options
-      if input_value.is_a?(Array)
-        selected_values = input_value
-      else
-        selected_values = input_value.to_s.split(",")
-      end
+      selected_values = input_value.is_a?(Array) ? input_value : input_value.to_s.split(",")
       array = collection.map(&:to_s) + selected_values
       array.sort.map do |value|
         option = { id: value, text: value }
@@ -60,11 +56,17 @@ module ActiveAdminAddons
     end
 
     def selected_collection
-      method_model.where(id: input_value)
+      @selected_collection ||= begin
+        if active_record_relation?(collection)
+          collection.model.where(id: input_value)
+        else
+          method_model.where(id: input_value)
+        end
+      end
     end
 
     def selected_item
-      selected_collection.first
+      @selected_item ||= selected_collection.first
     end
 
     private

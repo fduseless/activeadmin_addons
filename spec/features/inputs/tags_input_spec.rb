@@ -55,13 +55,41 @@ describe "Tags Input", type: :feature do
         expect(input.value).to eq(@item1.id.to_s)
         expect(input[:name]).to eq("invoice[item_ids][]")
         find(".select2-selection__choice__remove").click
-        expect { find(item_id, visible: false) }.to raise_error
+        expect { find(item_id, visible: false) }.to raise_error(Capybara::ElementNotFound)
       end
 
       it "does not allow new items", js: true do
         expect_select2_choices_count_to_eq(1)
         fill_select2_input_and_press_return("Not preloaded item")
         expect_select2_choices_count_to_eq(1)
+      end
+    end
+  end
+
+  context "working with active record relations but alisa" do
+    before do
+      register_form(Invoice) do |f|
+        f.input :other_item_ids, as: :tags, collection: Item.all
+      end
+
+      create_items
+      visit edit_admin_invoice_path(create_invoice)
+    end
+
+    it "shows preloaded items", js: true do
+      expect_select2_options_count_to_eq(3)
+    end
+
+    context "with added item" do
+      before { pick_select2_entered_option(@item1.name) }
+
+      it "adds/removes hidden item", js: true do
+        item_id = "#invoice_other_item_ids_#{@item1.id}"
+        input = find(item_id, visible: false)
+        expect(input.value).to eq(@item1.id.to_s)
+        expect(input[:name]).to eq("invoice[other_item_ids][]")
+        find(".select2-selection__choice__remove").click
+        expect { find(item_id, visible: false) }.to raise_error(Capybara::ElementNotFound)
       end
     end
   end

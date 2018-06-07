@@ -67,6 +67,23 @@ describe ActiveAdminAddons::SelectHelpers do
       expect(instance.array_to_select_options).to eq(result)
     end
 
+    context 'with array input value' do
+      let(:object) do
+        ObjectStruct = Struct.new(:array_of_integers)
+        ObjectStruct.new([1, 2])
+      end
+      let(:method) { :array_of_integers }
+
+      it "returns selected items only" do
+        result = [
+          { id: 1, text: 1, selected: "selected" },
+          { id: 2, text: 2, selected: "selected" }
+        ]
+
+        expect(instance.array_to_select_options).to eq(result)
+      end
+    end
+
     context "with collection only" do
       let(:object) { create_invoice(number: nil) }
 
@@ -233,10 +250,10 @@ describe ActiveAdminAddons::SelectHelpers do
       it { expect(instance.active_record_select?).to eq(true) }
     end
 
-    context "when method does not represent an Active Record collection" do
+    context "when method does not represent an Active Record collection but collection is" do
       let(:method) { :number }
 
-      it { expect(instance.active_record_select?).to eq(false) }
+      it { expect(instance.active_record_select?).to eq(true) }
     end
   end
 
