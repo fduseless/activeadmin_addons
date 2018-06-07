@@ -1,3 +1,7 @@
+require_relative "./input_helpers/input_methods.rb"
+require_relative "./input_helpers/input_html_helpers.rb"
+require_relative "./input_helpers/input_options_handler.rb"
+
 module ActiveAdminAddons
   class InputBase < Formtastic::Inputs::StringInput
     include InputOptionsHandler
