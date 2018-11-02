@@ -31,10 +31,7 @@ var initializer = function() {
       $(el).select2(selectOptions);
 
       function getSelectedItems() {
-        var choices = $(el).parent('li.input').find('.select2-selection__choice');
-        return $.map(choices, function(item) {
-          return $(item).attr('title');
-        });
+        return $.map($(el).select2('data'), function(item){return item["id"]});
       }
 
       function fillHiddenInput() {
