@@ -1,4 +1,4 @@
-$(function() {
+var initializer = function() {
   $('.toggle-bool-switch').click(function(e) {
     var boolSwitch = $(e.target);
 
@@ -17,6 +17,7 @@ $(function() {
       url: url,
       data: data,
       dataType: 'json',
+      headers : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
       error: function() {
         var errorMsg = 'Error: Update Unsuccessful';
         alert(errorMsg);
@@ -32,4 +33,7 @@ $(function() {
       type: 'PATCH',
     });
   });
-});
+};
+
+$(initializer);
+$(document).on('turbolinks:load', initializer);
