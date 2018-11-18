@@ -19,6 +19,7 @@ var initializer = function() {
       var order = element.data('order');
 
       var parent = element.data('parent');
+      var parent_query = element.data('parent-query') || parent;
       var model = element.data('model');
       var parentId = element.data('parent-id');
 
@@ -51,7 +52,7 @@ var initializer = function() {
             };
 
             if (!!parent) {
-              query.q[parent + '_eq'] = parentId;
+              query.q[parent_query + '_eq'] = parentId;
             }
 
             return query;
