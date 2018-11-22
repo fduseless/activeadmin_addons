@@ -25,7 +25,7 @@ class TagsInput < ActiveAdminAddons::InputBase
   private
 
   def render_array_tags
-    render_tags_control { build_hidden_control(prefixed_method, method_to_input_name, input_value) }
+    render_tags_control { build_hidden_control(prefixed_method, method_to_input_name, input_value.join(",")) }
   end
 
   def render_collection_tags
@@ -35,7 +35,9 @@ class TagsInput < ActiveAdminAddons::InputBase
   def render_tags_control(&block)
     concat(label_html)
     concat(block.call)
-    concat(builder.select(build_virtual_attr, [], {}, input_html_options))
+    options = input_html_options
+    options[:id] = options[:id] + "_virtual"
+    concat(builder.select(build_virtual_attr, [], {}, options))
   end
 
   def render_selected_hidden_items
